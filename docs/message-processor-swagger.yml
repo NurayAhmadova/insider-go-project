@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  title: Message Processor API
+  version: 1.0.0
+  description: API for starting/stopping auto-send scheduler and listing sent messages
+
+paths:
+  /start:
+    post:
+      summary: Start auto-send scheduler
+      responses:
+        '202':
+          description: Auto-send started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleResponse'
+              example:
+                status: "success"
+                message: "auto-send started"
+        '500':
+          description: Failed to start auto-send
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleResponse'
+              example:
+                status: "error"
+                message: "failed to start auto-send"
+
+  /stop:
+    post:
+      summary: Stop auto-send scheduler
+      responses:
+        '202':
+          description: Auto-send stopped
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleResponse'
+              example:
+                status: "success"
+                message: "auto-send stopped"
+        '500':
+          description: Failed to stop auto-send
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleResponse'
+              example:
+                status: "error"
+                message: "failed to stop auto-send"
+
+  /messages/sent:
+    get:
+      summary: Get list of sent messages
+      responses:
+        '200':
+          description: List of sent messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SentMessagesResponse'
+              example:
+                status: "success"
+                messages:
+                  - id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                    msisdn: "+1234567890"
+                    content: "Hello world!"
+                    sent_at: "2025-06-22T10:30:00Z"
+                  - id: "1c8e7b9a-4f94-4c02-8d0d-123456789abc"
+                    msisdn: "+0987654321"
+                    content: "Another message"
+                    sent_at: "2025-06-22T11:00:00Z"
+        '500':
+          description: Failed to list sent messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleResponse'
+              example:
+                status: "error"
+                message: "failed to list sent messages"
+
+components:
+  schemas:
+    SimpleResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Response status (e.g. success or error)
+        message:
+          type: string
+          description: Informative message about the result
+        error:
+          type: string
+          description: Optional error message
+          nullable: true
+
+    SentMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique message ID
+        msisdn:
+          type: string
+          description: Phone number of the recipient
+        content:
+          type: string
+          description: Content of the message
+        sent_at:
+          type: string
+          format: date-time
+          description: Timestamp when the message was sent
+
+    SentMessagesResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Response status
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/SentMessage'
+        error:
+          type: string
+          description: Optional error message
+          nullable: true

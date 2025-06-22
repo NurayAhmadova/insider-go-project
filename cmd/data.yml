@@ -1,0 +1,6 @@
+dsn: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+redis_addr: localhost:6379
+webhook_url: https://webhook.site/f1e3cacd-2d41-456c-8794-001d6ae5e02a
+auth_key: secret-auth-key
+batch_size: 10
+http_addr: ":8000"
